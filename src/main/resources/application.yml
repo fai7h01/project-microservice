@@ -9,7 +9,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/project-db
     username: postgres
-    password: admin
+    password: faith
     driver-class-name: org.postgresql.Driver
     initialization-mode: always
 
