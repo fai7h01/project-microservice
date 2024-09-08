@@ -223,9 +223,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private void completeRelatedTasks(String projectCode) {
-
         //TODO Send a request to task-service to complete all the tasks of a certain project
-
+        ResponseEntity<TaskResponse> taskResponse = taskClient.getCountsByProject(projectCode);
+        if (!Objects.requireNonNull(taskResponse.getBody()).isSuccess()){
+            throw new TasksCanNotBeCompletedException("Tasks of a project " + projectCode + " cannot be completed.");
+        }
     }
 
     private void deleteRelatedTasks(String projectCode) {
