@@ -233,7 +233,10 @@ public class ProjectServiceImpl implements ProjectService {
     private void deleteRelatedTasks(String projectCode) {
 
         //TODO Send a request to task-service to delete all the tasks of a certain project
-
+        ResponseEntity<TaskResponse> taskResponse = taskClient.deleteByProject(projectCode);
+        if (!Objects.requireNonNull(taskResponse.getBody()).isSuccess()){
+            throw new TasksCanNotBeDeletedException("Tasks of a project " + projectCode + " cannot be deleted.");
+        }
     }
 
 }
