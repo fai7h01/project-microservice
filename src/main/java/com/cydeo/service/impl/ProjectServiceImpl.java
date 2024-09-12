@@ -200,7 +200,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     private ProjectDTO retrieveProjectDetails(Project project) {
 
-        //TODO Retrieve the completed and non-completed task counts from task-service
         ProjectDTO projectDTO = mapperUtil.convert(project, new ProjectDTO());
 
         ResponseEntity<TaskResponse> taskResponse = taskClient.getCountsByProject(project.getProjectCode());
@@ -223,7 +222,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private void completeRelatedTasks(String projectCode) {
-        //TODO Send a request to task-service to complete all the tasks of a certain project
         ResponseEntity<TaskResponse> taskResponse = taskClient.getCountsByProject(projectCode);
         if (!Objects.requireNonNull(taskResponse.getBody()).isSuccess()){
             throw new TasksCanNotBeCompletedException("Tasks of a project " + projectCode + " cannot be completed.");
@@ -232,7 +230,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     private void deleteRelatedTasks(String projectCode) {
 
-        //TODO Send a request to task-service to delete all the tasks of a certain project
         ResponseEntity<TaskResponse> taskResponse = taskClient.deleteByProject(projectCode);
         if (!Objects.requireNonNull(taskResponse.getBody()).isSuccess()){
             throw new TasksCanNotBeDeletedException("Tasks of a project " + projectCode + " cannot be deleted.");
