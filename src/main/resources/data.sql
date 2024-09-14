@@ -1,4 +1,4 @@
-INSERT INTO projects(insert_date_time, insert_user_id, last_update_date_time, last_update_user_id, is_deleted,
+ INSERT INTO projects(insert_date_time, insert_user_id, last_update_date_time, last_update_user_id, is_deleted,
                   project_code, project_name, assigned_manager, start_date, end_date, project_status, project_detail)
 VALUES ('2022-01-05 00:00:00', 1, '2022-01-05 00:00:00', 1, false, 'SP001', 'Spring Core',
         'johnreese@email.com', '2022-01-05', '2022-04-05', 'COMPLETED', 'Spring Core Content Preparation.'),
