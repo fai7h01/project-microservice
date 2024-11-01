@@ -10,6 +10,7 @@ import com.cydeo.repository.ProjectRepository;
 import com.cydeo.service.KeycloakService;
 import com.cydeo.service.ProjectService;
 import com.cydeo.util.MapperUtil;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -79,6 +80,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @CircuitBreaker(name = "task-service", fallbackMethod = "readAllProjectsWithDetailsFallback")
     public List<ProjectDTO> readAllProjectsWithDetails() {
 
         String loggedInUserUsername = keycloakService.getUsername();
@@ -87,6 +89,24 @@ public class ProjectServiceImpl implements ProjectService {
         return foundProjects.stream()
                 .map(this::retrieveProjectDetails).collect(Collectors.toList());
 
+    }
+
+
+    //better to return from cache memory
+    List<ProjectDTO> readAllProjectsWithDetailsFallback(Throwable throwable) {
+        return List.of(
+                ProjectDTO.builder()
+                        .nonCompletedTaskCount(0)
+                        .completedTaskCount(0)
+                        .projectDetail("")
+                        .projectCode("")
+                        .projectName("")
+                        .assignedManager("")
+                        .endDate(null)
+                        .startDate(null)
+                        .projectStatus(null)
+                        .id(null).build()
+        );
     }
 
     @Override
@@ -229,7 +249,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private void deleteRelatedTasks(String projectCode) {
-
         ResponseEntity<TaskResponse> taskResponse = taskClient.deleteByProject(projectCode);
         if (!Objects.requireNonNull(taskResponse.getBody()).isSuccess()){
             throw new TasksCanNotBeDeletedException("Tasks of a project " + projectCode + " cannot be deleted.");
